@@ -6,6 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+pil = "*"
+pillow = "*"
+matplotlib = "*"
+mtcnn = "*"
+opencv-contrib-python = "*"
+keras = "*"
+sklearn = "*"
 
 [requires]
 python_version = "3.6"
