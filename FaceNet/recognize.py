@@ -1,4 +1,5 @@
 # TODO: Add recognition of custom image
+# TODO: Save SVM instead of training each time
 # develop a classifier for the 5 Celebrity Faces Dataset
 from random import choice
 from numpy import load
