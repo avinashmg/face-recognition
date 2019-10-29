@@ -66,7 +66,7 @@ def load_dataset(directory):
         # skip any files that might be in the dir
         if not isdir(path):
             continue
-        # load all faces in the subdirectory
+        # load all faces found in the subdirectory
         faces = load_faces(path)
         # create labels
         labels = [subdir for _ in range(len(faces))]

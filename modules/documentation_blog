@@ -1,0 +1,2 @@
+8/Oct: Replicating the face detection methodology from FaceNet project in the file face_detection.py under modules
+     : Doing it completely wrong as I tried to have the methods accept filenames instead of Images
