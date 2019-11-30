@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Tue Nov 19 00:34:37 2019
+# Created: Fri Nov 29 13:06:47 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,24 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(10, 10, 10, 10)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame = QtWidgets.QFrame(self.horizontalFrame)
+        self.frame.setMinimumSize(QtCore.QSize(410, 260))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
+        self.gridLayout_5 = QtWidgets.QGridLayout(self.frame)
+        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.imgDisplayLabel = QtWidgets.QLabel(self.frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.imgDisplayLabel.sizePolicy().hasHeightForWidth())
+        self.imgDisplayLabel.setSizePolicy(sizePolicy)
+        self.imgDisplayLabel.setMinimumSize(QtCore.QSize(400, 250))
+        self.imgDisplayLabel.setText("")
+        self.imgDisplayLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.imgDisplayLabel.setObjectName("imgDisplayLabel")
+        self.gridLayout_5.addWidget(self.imgDisplayLabel, 0, 0, 1, 1)
         self.horizontalLayout.addWidget(self.frame)
         self.groupBox = QtWidgets.QGroupBox(self.horizontalFrame)
         self.groupBox.setObjectName("groupBox")
@@ -136,7 +151,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Automatic Facial Recognition System", None, -1))
-        self.groupBox.setTitle(QtWidgets.QApplication.translate("MainWindow", "GroupBox", None, -1))
+        self.groupBox.setTitle(QtWidgets.QApplication.translate("MainWindow", "Controls", None, -1))
         self.radioButton.setText(QtWidgets.QApplication.translate("MainWindow", "Detection", None, -1))
         self.radioButton_2.setText(QtWidgets.QApplication.translate("MainWindow", "Recognition", None, -1))
         self.pushButton_3.setText(QtWidgets.QApplication.translate("MainWindow", "Capture new face", None, -1))
