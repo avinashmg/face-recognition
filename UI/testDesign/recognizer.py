@@ -2,6 +2,7 @@ import os
 import pickle
 
 import cv2
+import face_recognition
 import imutils
 import numpy as np
 
@@ -15,69 +16,69 @@ class Recogniser:
                                            "res10_300x300_ssd_iter_140000.caffemodel"])
         self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
 
-        # load our serialized face embedding model from disk
         print("[INFO] loading face recognizer...")
         self.embedder = cv2.dnn.readNetFromTorch("openface_nn4.small2.v1.t7")
 
-        # load the actual face recognition model along with the label encoder
-        self.recognizer = pickle.loads(open("output/recognizer.pickle", "rb").read())
-        self.le = pickle.loads(open("output/le.pickle", "rb").read())
+        print("[INFO] loading encodings...")
+        self.data = pickle.loads(open("output/encodings.pickle", "rb").read())
 
     def recogniseFromImage(self, image):
-        image = imutils.resize(image, width=600)
-        (h, w) = image.shape[:2]
-        imageBlob = cv2.dnn.blobFromImage(
-            cv2.resize(image, (300, 300)), 1.0, (300, 300),
-            (104.0, 177.0, 123.0), swapRB=False, crop=False)
+        # load the input image and convert it from BGR to RGB
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        self.detector.setInput(imageBlob)
-        detections = self.detector.forward()
-        print("NO OF DETECTIONS:", str(len(detections)))
-        # loop over the detections
-        for i in range(0, detections.shape[2]):
-            # extract the confidence (i.e., probability) associated with the
-            # prediction
-            confidence = detections[0, 0, i, 2]
+        # detect the (x, y)-coordinates of the bounding boxes corresponding
+        # to each face in the input image, then compute the facial embeddings
+        # for each face
+        print("[INFO] recognizing faces...")
+        boxes = face_recognition.face_locations(rgb,
+                                                model="hog")
+        encodings = face_recognition.face_encodings(rgb, boxes)
 
-            # filter out weak detections
-            if confidence > 0.5:
-                # compute the (x, y)-coordinates of the bounding box for the
-                # face
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                (startX, startY, endX, endY) = box.astype("int")
+        # initialize the list of names for each face detected
+        names = []
+        # loop over the facial embeddings
+        print("[INFO] faces detected:", len(encodings))
+        for encoding in encodings:
+            # attempt to match each face in the input image to our known
+            # encodings
+            matches = face_recognition.compare_faces(self.data["encodings"],
+                                                     encoding)
+            name = "Unknown"
+            # check to see if we have found a match
+            if True in matches:
+                # find the indexes of all matched faces then initialize a
+                # dictionary to count the total number of times each face
+                # was matched
+                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+                counts = {}
 
-                # extract the face ROI
-                face = image[startY:endY, startX:endX]
-                (fH, fW) = face.shape[:2]
+                # loop over the matched indexes and maintain a count for
+                # each recognized face face
+                for i in matchedIdxs:
+                    name = self.data["names"][i]
+                    counts[name] = counts.get(name, 0) + 1
 
-                # ensure the face width and height are sufficiently large
-                if fW < 20 or fH < 20:
-                    continue
+                # determine the recognized face with the largest number of
+                # votes (note: in the event of an unlikely tie Python will
+                # select first entry in the dictionary)
+                name = max(counts, key=counts.get)
+                # update the list of names
+                names.append(name)
+        # loop over the recognized faces
+        for ((top, right, bottom, left), name) in zip(boxes, names):
+            # draw the predicted face name on the image
+            cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+            y = top - 15 if top - 15 > 15 else top + 15
+            cv2.putText(image, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.75, (0, 255, 0), 2)
+        print("Detected faces:", names)
 
-                # construct a blob for the face ROI, then pass the blob
-                # through our face embedding model to obtain the 128-d
-                # quantification of the face
-                faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96),
-                                                 (0, 0, 0), swapRB=True, crop=False)
-                self.embedder.setInput(faceBlob)
-                vec = self.embedder.forward()
+        # # show the output image
+        # imageS = imutils.resize(image, 720)
+        # cv2.imshow("Image", imageS)
+        # cv2.waitKey(0)
 
-                # perform classification to recognize the face
-                preds = self.recognizer.predict_proba(vec)[0]
-                j = np.argmax(preds)
-                proba = preds[j]
-                name = self.le.classes_[j]
-
-                # draw the bounding box of the face along with the associated
-                # probability
-                text = "{}: {:.2f}%".format(name, proba * 100)
-                y = startY - 10 if startY - 10 > 10 else startY + 10
-                cv2.rectangle(image, (startX, startY), (endX, endY),
-                              (0, 0, 255), 2)
-                cv2.putText(image, text, (startX, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-
-        cv2.imshow("Recognised Image", image)
+        return image
 
     def recogniseFromFileName(self, filename):
         image = cv2.imread(filename)

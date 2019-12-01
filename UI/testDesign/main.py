@@ -2,7 +2,6 @@
 import sys
 import threading
 from time import sleep
-import extract_embeddings
 
 from PySide2.QtGui import QPixmap, QCloseEvent
 from PySide2.QtWidgets import QApplication, QMainWindow
@@ -45,7 +44,6 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    # extract_embeddings.main()
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
     videoController = VideoController()
