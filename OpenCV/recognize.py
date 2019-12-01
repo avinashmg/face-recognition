@@ -39,6 +39,8 @@ le = pickle.loads(open(args["le"], "rb").read())
 
 # load the image, resize it to have a width of 600 pixels (while
 # maintaining the aspect ratio), and then grab the image dimensions
+ret, frame = cv2.VideoCapture(0).read()
+cv2.imwrite("")
 image = cv2.imread(args["image"])
 image = imutils.resize(image, width=600)
 (h, w) = image.shape[:2]

@@ -20,11 +20,12 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.threadFlag = True
         self.updateFrame()
 
     @threaded
     def updateFrame(self):
-        while True:
+        while self.threadFlag:
             qtImg = videoController.nextQtFrame()
             pixmap = QPixmap(qtImg)
             self.ui.imgDisplayLabel.setPixmap(
@@ -33,16 +34,18 @@ class MainWindow(QMainWindow):
                               Qt.SmoothTransformation
                               )
             )
+        return
 
     def closeEvent(self, event:QCloseEvent):
         # Closing the video capture thread
         videoController.threadFlag =False
+        self.threadFlag = False
         super(MainWindow, self).closeEvent(event)
         app.exit()
 
 
 if __name__ == "__main__":
-    extract_embeddings.main()
+    # extract_embeddings.main()
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
     videoController = VideoController()

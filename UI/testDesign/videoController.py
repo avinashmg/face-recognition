@@ -40,6 +40,9 @@ class VideoController():
         # load the actual face recognition model along with the label encoder
         self.recognizer = pickle.loads(open("output/recognizer.pickle", "rb").read())
         self.le = pickle.loads(open("output/le.pickle", "rb").read())
+        cv2.imwrite("temp/temp.jpg", image)
+        image = cv2.imread("temp/temp.jpg")
+        os.remove("temp/temp.jpg")
         image = imutils.resize(image, width=600)
         (h, w) = image.shape[:2]
         # construct a blob from the image
@@ -51,7 +54,7 @@ class VideoController():
         # faces in the input image
         self.detector.setInput(imageBlob)
         detections = self.detector.forward()
-
+        print("NO OF DETECTIONS:", str(len(detections)))
         # loop over the detections
         for i in range(0, detections.shape[2]):
             # extract the confidence (i.e., probability) associated with the
@@ -109,6 +112,8 @@ class VideoController():
             self.frames.append(frame)
             i = i + 1
             sleep(0.01)
+        cap.release()
+        return
 
     # @threaded
     def nextQtFrame(self):
@@ -125,6 +130,8 @@ class VideoController():
         bytesPerLine = 3 * width
         qImg = QImage(cvImg.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
         return qImg
+
+
 
 
 # if __name__ == "__main__":

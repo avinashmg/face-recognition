@@ -1,4 +1,5 @@
 # Face Detection using Multi-Task Convolutional Neural Network
+import os
 from PIL import Image
 from mtcnn.mtcnn import MTCNN
 from numpy import asarray
