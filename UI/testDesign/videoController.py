@@ -22,32 +22,36 @@ class VideoController():
     def __init__(self):
         print("Initialising video controller")
         print("Calling processFrames")
-        self.processFrames()
+        # self.processFrames()
         self.frames = []
         self.threadFlag = True
         self.recogniser = Recogniser()
+        self.i = 0
+        self.cap = cv2.VideoCapture(0)
 
-    @threaded
-    def processFrames(self):
-        i = 0
-        cap = cv2.VideoCapture(0)
-        while self.threadFlag:
-            print("Prcoessing frame no.:" + str(i))
-            ret, frame = cap.read()
-            frame = self.recogniser.recogniseFromImage(frame)
-            self.frames.append(frame)
-            i = i + 1
-            sleep(0.01)
-        cap.release()
-        return
+    # # @threaded
+    # def processFrames(self):
+    #     i = 0
+    #     cap = cv2.VideoCapture(0)
+    #     while self.threadFlag:
+    #         print("[INFO] prcoessing frame no.:" + str(i))
+    #         ret, frame = cap.read()
+    #         prcoessedFrame = self.recogniser.recogniseFromImage(frame.copy())
+    #         print("[INFO] appending frame to array")
+    #         self.frames.append(prcoessedFrame)
+    #         i = i + 1
+    #     cap.release()
+    #     return
 
     # @threaded
     def nextQtFrame(self):
-        # print("Sending frame")
-        if(len(self.frames) == 0):
-            sleep(1)
-        cvImg = self.frames[-1]
-        qtImg = self.convertToQImage(cvImg)
+        print("[INFO] qt requesting frame")
+        print("[INFO] prcoessing frame no.:" + str(self.i))
+        ret, frame = self.cap.read()
+        prcoessedFrame = self.recogniser.recogniseFromImage(frame.copy())
+        self.i = self.i + 1
+        qtImg = self.convertToQImage(prcoessedFrame)
+        print("[INFO] sending frame to Qt")
         return qtImg
 
 
@@ -56,6 +60,9 @@ class VideoController():
         bytesPerLine = 3 * width
         qImg = QImage(cvImg.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
         return qImg
+
+    def __del__(self):
+        self.cap.release()
 
 
 

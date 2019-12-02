@@ -71,13 +71,7 @@ class Recogniser:
             y = top - 15 if top - 15 > 15 else top + 15
             cv2.putText(image, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
                         0.75, (0, 255, 0), 2)
-        print("Detected faces:", names)
-
-        # # show the output image
-        # imageS = imutils.resize(image, 720)
-        # cv2.imshow("Image", imageS)
-        # cv2.waitKey(0)
-
+        print("[INFO] detected faces:", names)
         return image
 
     def recogniseFromFileName(self, filename):

@@ -5,14 +5,32 @@ from time import sleep
 
 from PySide2.QtGui import QPixmap, QCloseEvent
 from PySide2.QtWidgets import QApplication, QMainWindow
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QTimer, SIGNAL, QThread
 from ui_mainwindow import Ui_MainWindow
 from videoController import VideoController
+
+import faulthandler
+
+faulthandler.enable()
 
 def threaded(fn):
     def wrapper(*args, **kwargs):
         threading.Thread(target=fn, args=args, kwargs=kwargs).start()
     return wrapper
+class UpdateThread(QThread):
+    def run(self):
+        print("[INFO] updateFrame called")
+        while window.threadFlag:
+            qtImg = videoController.nextQtFrame()
+            pixmap = QPixmap(qtImg)
+            window.ui.imgDisplayLabel.setPixmap(
+                pixmap.scaled(
+                    window.ui.imgDisplayLabel.size(),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation)
+            )
+        print("[INFO] update frame finished")
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -20,20 +38,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.threadFlag = True
-        self.updateFrame()
-
-    @threaded
-    def updateFrame(self):
-        while self.threadFlag:
-            qtImg = videoController.nextQtFrame()
-            pixmap = QPixmap(qtImg)
-            self.ui.imgDisplayLabel.setPixmap(
-                pixmap.scaled(self.ui.imgDisplayLabel.size(),
-                              Qt.KeepAspectRatio,
-                              Qt.SmoothTransformation
-                              )
-            )
-        return
+        self.thread = UpdateThread()
+        self.thread.start()
 
     def closeEvent(self, event:QCloseEvent):
         # Closing the video capture thread
