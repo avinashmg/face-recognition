@@ -41,12 +41,16 @@ class MainWindow(QMainWindow):
         self.thread = UpdateThread()
         self.thread.start()
 
+
     def closeEvent(self, event:QCloseEvent):
         # Closing the video capture thread
         videoController.threadFlag =False
         self.threadFlag = False
         super(MainWindow, self).closeEvent(event)
         app.exit()
+
+    def startRecognition(self):
+        self.thread.start()
 
 
 if __name__ == "__main__":
