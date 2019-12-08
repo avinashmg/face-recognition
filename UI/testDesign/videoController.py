@@ -45,14 +45,15 @@ class VideoController():
 
     # @threaded
     def nextQtFrame(self):
-        print("[INFO] qt requesting frame")
+        self.i = self.i + 1
+        print("[OBJECT] videoController nextQtFrame")
         print("[INFO] prcoessing frame no.:" + str(self.i))
         ret, frame = self.cap.read()
-        prcoessedFrame = self.recogniser.recogniseFromImage(frame.copy())
-        self.i = self.i + 1
-        qtImg = self.convertToQImage(prcoessedFrame)
+        processedFrame = self.recogniser.recogniseFromImage(frame.copy())
+        # processedFrame = frame
+        qtImg = self.convertToQImage(processedFrame)
         print("[INFO] sending frame to Qt")
-        return qtImg
+        return qtImg, self.i
 
 
     def convertToQImage(self, cvImg):

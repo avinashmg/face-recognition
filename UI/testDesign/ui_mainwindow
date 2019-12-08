@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Sun Dec  8 13:44:15 2019
+# Created: Sat Dec  7 06:43:34 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -53,16 +53,12 @@ class Ui_MainWindow(object):
         self.verticalFrame.setObjectName("verticalFrame")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalFrame)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.realTimeModerRadioButton = QtWidgets.QRadioButton(self.verticalFrame)
-        self.realTimeModerRadioButton.setChecked(True)
-        self.realTimeModerRadioButton.setObjectName("realTimeModerRadioButton")
-        self.verticalLayout.addWidget(self.realTimeModerRadioButton)
-        self.responsiveModeRadioButton = QtWidgets.QRadioButton(self.verticalFrame)
-        self.responsiveModeRadioButton.setObjectName("responsiveModeRadioButton")
-        self.verticalLayout.addWidget(self.responsiveModeRadioButton)
-        self.hibernateModeRadioButton = QtWidgets.QRadioButton(self.verticalFrame)
-        self.hibernateModeRadioButton.setObjectName("hibernateModeRadioButton")
-        self.verticalLayout.addWidget(self.hibernateModeRadioButton)
+        self.radioButton = QtWidgets.QRadioButton(self.verticalFrame)
+        self.radioButton.setObjectName("radioButton")
+        self.verticalLayout.addWidget(self.radioButton)
+        self.radioButton_2 = QtWidgets.QRadioButton(self.verticalFrame)
+        self.radioButton_2.setObjectName("radioButton_2")
+        self.verticalLayout.addWidget(self.radioButton_2)
         self.pushButton_3 = QtWidgets.QPushButton(self.verticalFrame)
         self.pushButton_3.setObjectName("pushButton_3")
         self.verticalLayout.addWidget(self.pushButton_3)
@@ -156,9 +152,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Automatic Facial Recognition System", None, -1))
         self.groupBox.setTitle(QtWidgets.QApplication.translate("MainWindow", "Controls", None, -1))
-        self.realTimeModerRadioButton.setText(QtWidgets.QApplication.translate("MainWindow", "Real time mode", None, -1))
-        self.responsiveModeRadioButton.setText(QtWidgets.QApplication.translate("MainWindow", "Responsive mode", None, -1))
-        self.hibernateModeRadioButton.setText(QtWidgets.QApplication.translate("MainWindow", "Hibernate mode", None, -1))
+        self.radioButton.setText(QtWidgets.QApplication.translate("MainWindow", "On", None, -1))
+        self.radioButton_2.setText(QtWidgets.QApplication.translate("MainWindow", "Off", None, -1))
         self.pushButton_3.setText(QtWidgets.QApplication.translate("MainWindow", "Capture new face", None, -1))
         self.pushButton_4.setText(QtWidgets.QApplication.translate("MainWindow", "Close connection", None, -1))
         self.groupBox_2.setTitle(QtWidgets.QApplication.translate("MainWindow", "Details", None, -1))

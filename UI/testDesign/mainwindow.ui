@@ -98,16 +98,26 @@
            <widget class="QFrame" name="verticalFrame">
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QRadioButton" name="radioButton">
+              <widget class="QRadioButton" name="realTimeModerRadioButton">
                <property name="text">
-                <string>Detection</string>
+                <string>Real time mode</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton_2">
+              <widget class="QRadioButton" name="responsiveModeRadioButton">
                <property name="text">
-                <string>Recognition</string>
+                <string>Responsive mode</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="hibernateModeRadioButton">
+               <property name="text">
+                <string>Hibernate mode</string>
                </property>
               </widget>
              </item>

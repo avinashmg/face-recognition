@@ -1,56 +1,94 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import threading
+import time
 from time import sleep
 
-from PySide2.QtGui import QPixmap, QCloseEvent
+from PySide2.QtGui import QPixmap, QCloseEvent, QImage
 from PySide2.QtWidgets import QApplication, QMainWindow
-from PySide2.QtCore import Qt, QTimer, SIGNAL, QThread
+from PySide2.QtCore import Qt, QTimer, SIGNAL, QThread, QObject, Signal, Slot
 from ui_mainwindow import Ui_MainWindow
 from videoController import VideoController
-
 import faulthandler
 
 faulthandler.enable()
 
-def threaded(fn):
-    def wrapper(*args, **kwargs):
-        threading.Thread(target=fn, args=args, kwargs=kwargs).start()
-    return wrapper
 class UpdateThread(QThread):
-    def run(self):
-        print("[INFO] updateFrame called")
-        while window.threadFlag:
-            qtImg = videoController.nextQtFrame()
-            pixmap = QPixmap(qtImg)
-            window.ui.imgDisplayLabel.setPixmap(
-                pixmap.scaled(
-                    window.ui.imgDisplayLabel.size(),
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation)
-            )
-        print("[INFO] update frame finished")
+    sendPixmap = Signal(QImage, int)
+    def __init__(self, parent):
+        super(UpdateThread, self).__init__(parent)
+        self.parent = parent
+        self.sendPixmap.connect(parent.receiveFrame)
 
+    def run(self):
+        print("[OBJECT] UpdateThread run")
+        self.counter = 0
+        while self.parent.threadFlag:
+            self.counter = self.counter + 1
+            print("[INFO] Processing")
+            start = time.time()
+            if self.counter%self.parent.modeVariable == 0:
+                qtImg, sNo = videoController.nextQtFrame()
+                self.sendPixmap.emit(qtImg, sNo)
+            end = time.time()
+            print("Time taken for processing: ", end - start)
+        print("[INFO] update frame finished")
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        print("Initialising Main Window")
+        start = time.time()
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.responsiveModeRadioButton.toggled.connect(self.modeChanged)
+        self.modeVariable = 1
         self.threadFlag = True
-        self.thread = UpdateThread()
+        self.thread = UpdateThread(self)
         self.thread.start()
+        end = time.time()
+        print("Time taken: ",end - start)
+
+    # Status: Complete
+    def modeChanged(self):
+        if self.ui.responsiveModeRadioButton.isChecked() == True:
+            if self.thread.isRunning() == False:
+                print("[INFO] Starting thread again")
+                self.threadFlag = True
+                self.thread.start()
+            self.modeVariable = 5
+        elif self.ui.hibernateModeRadioButton.isChecked() == True:
+            self.threadFlag = False
+        elif self.ui.realTimeModerRadioButton.isChecked() == True:
+            if self.thread.isRunning() == False:
+                self.threadFlag = True
+                print("[INFO] Starting thread again")
+                self.thread.start()
+            self.modeVariable = 1
+        else:
+            print("[ERROR] Unknown error!")
+    @Slot(QImage, int)
+
+
+    def receiveFrame(self, qtImg, sNo):
+        print("[OBJECT] MainWindow receiveFrame")
+        print("[INFO] Updating frame no: ", sNo)
+        start = time.time()
+        pixmap = QPixmap(qtImg)
+        self.ui.imgDisplayLabel.setPixmap(pixmap.scaled(self.ui.imgDisplayLabel.size(),
+                                                        Qt.KeepAspectRatio,
+                                                        Qt.SmoothTransformation))
+        end = time.time()
+        print("Time taken setting pixmap: ",end - start)
 
 
     def closeEvent(self, event:QCloseEvent):
         # Closing the video capture thread
         videoController.threadFlag =False
         self.threadFlag = False
+        self.thread.wait()
         super(MainWindow, self).closeEvent(event)
         app.exit()
-
-    def startRecognition(self):
-        self.thread.start()
 
 
 if __name__ == "__main__":
