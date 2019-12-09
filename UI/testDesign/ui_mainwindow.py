@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Sun Dec  8 13:44:15 2019
+# Created: Mon Dec  9 14:43:30 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -94,21 +94,21 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.groupBox_2)
         self.label.setObjectName("label")
         self.gridLayout_3.addWidget(self.label, 0, 0, 1, 1)
-        self.label_4 = QtWidgets.QLabel(self.groupBox_2)
-        self.label_4.setObjectName("label_4")
-        self.gridLayout_3.addWidget(self.label_4, 1, 1, 1, 1)
+        self.lastSeenLabel = QtWidgets.QLabel(self.groupBox_2)
+        self.lastSeenLabel.setObjectName("lastSeenLabel")
+        self.gridLayout_3.addWidget(self.lastSeenLabel, 1, 1, 1, 1)
         self.label_2 = QtWidgets.QLabel(self.groupBox_2)
         self.label_2.setObjectName("label_2")
         self.gridLayout_3.addWidget(self.label_2, 1, 0, 1, 1)
-        self.label_3 = QtWidgets.QLabel(self.groupBox_2)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout_3.addWidget(self.label_3, 0, 1, 1, 1)
+        self.nameLabel = QtWidgets.QLabel(self.groupBox_2)
+        self.nameLabel.setObjectName("nameLabel")
+        self.gridLayout_3.addWidget(self.nameLabel, 0, 1, 1, 1)
         self.label_5 = QtWidgets.QLabel(self.groupBox_2)
         self.label_5.setObjectName("label_5")
         self.gridLayout_3.addWidget(self.label_5, 2, 0, 1, 1)
-        self.label_6 = QtWidgets.QLabel(self.groupBox_2)
-        self.label_6.setObjectName("label_6")
-        self.gridLayout_3.addWidget(self.label_6, 2, 1, 1, 1)
+        self.totalVisitLabel = QtWidgets.QLabel(self.groupBox_2)
+        self.totalVisitLabel.setObjectName("totalVisitLabel")
+        self.gridLayout_3.addWidget(self.totalVisitLabel, 2, 1, 1, 1)
         self.gridLayout_2.addWidget(self.groupBox_2, 0, 0, 1, 1)
         self.frame_2 = QtWidgets.QFrame(self.tab)
         self.frame_2.setMinimumSize(QtCore.QSize(357, 0))
@@ -163,11 +163,11 @@ class Ui_MainWindow(object):
         self.pushButton_4.setText(QtWidgets.QApplication.translate("MainWindow", "Close connection", None, -1))
         self.groupBox_2.setTitle(QtWidgets.QApplication.translate("MainWindow", "Details", None, -1))
         self.label.setText(QtWidgets.QApplication.translate("MainWindow", "Name:", None, -1))
-        self.label_4.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
+        self.lastSeenLabel.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
         self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "Last Seen:", None, -1))
-        self.label_3.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
+        self.nameLabel.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
         self.label_5.setText(QtWidgets.QApplication.translate("MainWindow", "Total number of visits:", None, -1))
-        self.label_6.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
+        self.totalVisitLabel.setText(QtWidgets.QApplication.translate("MainWindow", "TextLabel", None, -1))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtWidgets.QApplication.translate("MainWindow", "Real-time info", None, -1))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtWidgets.QApplication.translate("MainWindow", "Logs", None, -1))
         self.pushButton_9.setText(QtWidgets.QApplication.translate("MainWindow", "Search", None, -1))

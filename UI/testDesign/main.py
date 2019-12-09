@@ -88,9 +88,9 @@ class MainWindow(QMainWindow):
         self.ui.imgDisplayLabel.setPixmap(pixmap.scaled(self.ui.imgDisplayLabel.size(),
                                                         Qt.KeepAspectRatio,
                                                         Qt.SmoothTransformation))
+        self.ui.nameLabel.setText(key)
         end = time.time()
         print("Time taken setting pixmap: ",end - start)
-
 
     def closeEvent(self, event:QCloseEvent):
         # Closing the video capture thread
