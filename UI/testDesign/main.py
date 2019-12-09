@@ -14,7 +14,7 @@ import faulthandler
 faulthandler.enable()
 
 class UpdateThread(QThread):
-    sendPixmap = Signal(QImage, int)
+    sendPixmap = Signal(QImage, int, str)
     def __init__(self, parent):
         super(UpdateThread, self).__init__(parent)
         self.parent = parent
@@ -28,8 +28,9 @@ class UpdateThread(QThread):
             print("[INFO] Processing")
             start = time.time()
             if self.counter%self.parent.modeVariable == 0:
-                qtImg, sNo = videoController.nextQtFrame()
-                self.sendPixmap.emit(qtImg, sNo)
+                qtImg, sNo, key = videoController.nextQtFrame()
+                self.parent.transmitStartTime = time.time()
+                self.sendPixmap.emit(qtImg, sNo, key)
             end = time.time()
             print("Time taken for processing: ", end - start)
         print("[INFO] update frame finished")
@@ -42,6 +43,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.responsiveModeRadioButton.toggled.connect(self.modeChanged)
+        self.ui.hibernateModeRadioButton.toggled.connect(self.modeChanged)
+        self.ui.realTimeModerRadioButton.toggled.connect(self.modeChanged)
         self.modeVariable = 1
         self.threadFlag = True
         self.thread = UpdateThread(self)
@@ -52,14 +55,18 @@ class MainWindow(QMainWindow):
     # Status: Complete
     def modeChanged(self):
         if self.ui.responsiveModeRadioButton.isChecked() == True:
+            print("Responsive Mode Button pressed!----------------------------------")
             if self.thread.isRunning() == False:
                 print("[INFO] Starting thread again")
                 self.threadFlag = True
                 self.thread.start()
             self.modeVariable = 5
         elif self.ui.hibernateModeRadioButton.isChecked() == True:
+            print("Hibernate Mode Button pressed!-----------------------------------")
             self.threadFlag = False
+            self.thread.exit()
         elif self.ui.realTimeModerRadioButton.isChecked() == True:
+            print("Realtime Mode Button pressed!------------------------------------")
             if self.thread.isRunning() == False:
                 self.threadFlag = True
                 print("[INFO] Starting thread again")
@@ -67,12 +74,15 @@ class MainWindow(QMainWindow):
             self.modeVariable = 1
         else:
             print("[ERROR] Unknown error!")
-    @Slot(QImage, int)
+        print("[INFO] Value changed to :", self.modeVariable)
 
-
-    def receiveFrame(self, qtImg, sNo):
+    @Slot(QImage, int, str)
+    def receiveFrame(self, qtImg, sNo, key):
         print("[OBJECT] MainWindow receiveFrame")
         print("[INFO] Updating frame no: ", sNo)
+        print("[INFO] Key is: ", key)
+        self.transmitEndTime = time.time()
+        print("[IMP] Time taken to transmit: ", self.transmitEndTime - self.transmitStartTime)
         start = time.time()
         pixmap = QPixmap(qtImg)
         self.ui.imgDisplayLabel.setPixmap(pixmap.scaled(self.ui.imgDisplayLabel.size(),

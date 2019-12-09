@@ -72,7 +72,11 @@ class Recogniser:
             cv2.putText(image, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
                         0.75, (0, 255, 0), 2)
         print("[INFO] detected faces:", names)
-        return image
+        if len(names) != 0:
+            key = names[0]
+        else:
+            key = 'null'
+        return image, key
 
     def recogniseFromFileName(self, filename):
         image = cv2.imread(filename)
