@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #cc7832;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0"># This Python file uses the following encoding: utf-8</span>
+<span class="s2">import </span><span class="s1">sys</span>
+<span class="s2">import </span><span class="s1">threading</span>
+<span class="s2">import </span><span class="s1">time</span>
+<span class="s2">from </span><span class="s1">time </span><span class="s2">import </span><span class="s1">sleep</span>
+
+<span class="s2">from </span><span class="s1">PySide2.QtGui </span><span class="s2">import </span><span class="s1">QPixmap</span><span class="s2">, </span><span class="s1">QCloseEvent</span>
+<span class="s2">from </span><span class="s1">PySide2.QtWidgets </span><span class="s2">import </span><span class="s1">QApplication</span><span class="s2">, </span><span class="s1">QMainWindow</span>
+<span class="s2">from </span><span class="s1">PySide2.QtCore </span><span class="s2">import </span><span class="s1">Qt</span><span class="s2">, </span><span class="s1">QTimer</span><span class="s2">, </span><span class="s1">SIGNAL</span><span class="s2">, </span><span class="s1">QThread</span><span class="s2">, </span><span class="s1">QObject</span><span class="s2">, </span><span class="s1">Signal</span><span class="s2">, </span><span class="s1">Slot</span>
+<span class="s2">from </span><span class="s1">ui_mainwindow </span><span class="s2">import </span><span class="s1">Ui_MainWindow</span>
+<span class="s2">from </span><span class="s1">videoController </span><span class="s2">import </span><span class="s1">VideoController</span>
+<span class="s2">import </span><span class="s1">faulthandler</span>
+
+<span class="s1">faulthandler.enable()</span>
+
+<span class="s2">class </span><span class="s1">Communicate(QObject):</span>
+    <span class="s1">sendPixmap = Signal(QPixmap)</span>
+    <span class="s2">def </span><span class="s1">__init__(self):</span>
+        <span class="s1">QObject.__init__(self)</span>
+
+<span class="s2">class </span><span class="s1">UpdateThread(QThread):</span>
+    <span class="s2">def </span><span class="s1">__init__(self</span><span class="s2">, </span><span class="s1">parent):</span>
+        <span class="s1">QThread.__init__(self</span><span class="s2">, </span><span class="s1">parent)</span>
+        <span class="s1">self.parent = parent</span>
+        <span class="s1">self.signals = Communicate()</span>
+        <span class="s1">self.signals.sendPixmap.connect(parent.receiveFrame)</span>
+
+    <span class="s2">def </span><span class="s1">run(self):</span>
+        <span class="s1">print(</span><span class="s3">&quot;[INFO] updateFrame called&quot;</span><span class="s1">)</span>
+        <span class="s2">while </span><span class="s1">window.threadFlag:</span>
+            <span class="s1">print(</span><span class="s3">&quot;Processing&quot;</span><span class="s1">)</span>
+            <span class="s1">start = time.time()</span>
+            <span class="s1">qtImg = videoController.nextQtFrame()</span>
+            <span class="s1">pixmap = QPixmap(qtImg)</span>
+            <span class="s1">self.signals.sendPixmap.emit(pixmap.scaled(self.parent.ui.imgDisplayLabel.size()</span><span class="s2">,</span>
+                                                        <span class="s1">Qt.KeepAspectRatio</span><span class="s2">,</span>
+                                                        <span class="s1">Qt.SmoothTransformation))</span>
+            <span class="s1">end = time.time()</span>
+            <span class="s1">print(</span><span class="s3">&quot;Time taken: &quot;</span><span class="s2">, </span><span class="s1">end - start)</span>
+        <span class="s1">print(</span><span class="s3">&quot;[INFO] update frame finished&quot;</span><span class="s1">)</span>
+
+<span class="s2">class </span><span class="s1">MainWindow(QMainWindow):</span>
+    <span class="s2">def </span><span class="s1">__init__(self):</span>
+        <span class="s1">print(</span><span class="s3">&quot;Initialising Main Window&quot;</span><span class="s1">)</span>
+        <span class="s1">start = time.time()</span>
+        <span class="s1">super(MainWindow</span><span class="s2">, </span><span class="s1">self).__init__()</span>
+        <span class="s1">self.ui = Ui_MainWindow()</span>
+        <span class="s1">self.ui.setupUi(self)</span>
+        <span class="s1">self.threadFlag = </span><span class="s2">True</span>
+        <span class="s1">self.thread = UpdateThread(self)</span>
+        <span class="s1">self.thread.start()</span>
+        <span class="s1">end = time.time()</span>
+        <span class="s1">print(</span><span class="s3">&quot;Time taken: &quot;</span><span class="s2">,</span><span class="s1">end - start)</span>
+
+    <span class="s1">@Slot(QPixmap)</span>
+    <span class="s2">def </span><span class="s1">receiveFrame(self</span><span class="s2">, </span><span class="s1">pixmap):</span>
+        <span class="s1">print(</span><span class="s3">&quot;Receiving and displaying frame&quot;</span><span class="s1">)</span>
+        <span class="s1">start = time.time()</span>
+        <span class="s1">print(</span><span class="s3">&quot;[INFO] receiveFrame Slot invoked!&quot;</span><span class="s1">)</span>
+        <span class="s1">self.ui.imgDisplayLabel.setPixmap(pixmap)</span>
+        <span class="s1">end = time.time()</span>
+        <span class="s1">print(</span><span class="s3">&quot;Time taken: &quot;</span><span class="s2">,</span><span class="s1">end - start)</span>
+
+
+    <span class="s2">def </span><span class="s1">closeEvent(self</span><span class="s2">, </span><span class="s1">event:QCloseEvent):</span>
+        <span class="s0"># Closing the video capture thread</span>
+        <span class="s1">videoController.threadFlag =</span><span class="s2">False</span>
+        <span class="s1">self.threadFlag = </span><span class="s2">False</span>
+        <span class="s1">self.thread.wait()</span>
+        <span class="s1">super(MainWindow</span><span class="s2">, </span><span class="s1">self).closeEvent(event)</span>
+        <span class="s1">app.exit()</span>
+
+
+<span class="s2">if </span><span class="s1">__name__ == </span><span class="s3">&quot;__main__&quot;</span><span class="s1">:</span>
+    <span class="s1">app = QApplication(sys.argv)</span>
+    <span class="s1">app.setQuitOnLastWindowClosed(</span><span class="s2">True</span><span class="s1">)</span>
+    <span class="s1">videoController = VideoController()</span>
+    <span class="s1">window = MainWindow()</span>
+    <span class="s1">window.show()</span>
+    <span class="s1">sys.exit(app.exec_())</span></pre>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Objectives:
+1. Battery (Temperature, Cutoff value(preset), ) - Overcharging,
+2. Motor (Temperature, Current supply, Shaft bending, RPM, )
+3. Motor controller (ECU) - Collect data as a backup
+4. Cooling Systems (Fan RPMS, Airflow temperature)
+5. Driver behaviour in relation to range,
+
+Failures:
+1. Motor (Shaft bending, Coil burnout)
+2. Controller ()
+3. Cooling System - Shorting,
+4. Battery - Partial Failure, 
