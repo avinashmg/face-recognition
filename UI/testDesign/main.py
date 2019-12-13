@@ -2,6 +2,7 @@
 import sys
 import threading
 import time
+import json
 from time import sleep
 
 from PySide2.QtGui import QPixmap, QCloseEvent, QImage
@@ -10,7 +11,7 @@ from PySide2.QtCore import Qt, QTimer, SIGNAL, QThread, QObject, Signal, Slot
 from ui_mainwindow import Ui_MainWindow
 from videoController import VideoController
 import faulthandler
-
+import dblink as db
 faulthandler.enable()
 
 class UpdateThread(QThread):
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
         self.ui.responsiveModeRadioButton.toggled.connect(self.modeChanged)
         self.ui.hibernateModeRadioButton.toggled.connect(self.modeChanged)
         self.ui.realTimeModerRadioButton.toggled.connect(self.modeChanged)
+        self.ui.lineEdit.textEdited.connect(self.searchIt)
         self.modeVariable = 1
         self.threadFlag = True
         self.thread = UpdateThread(self)
@@ -53,6 +55,13 @@ class MainWindow(QMainWindow):
         print("Time taken: ",end - start)
 
     # Status: Complete
+    def searchIt(self):
+        keyword = self.ui.lineEdit.text()
+        result = json.loads(db.search_person(keyword))
+        self.ui.listWidget.clear()
+        for person in result:
+            self.ui.listWidget.addItem(person["personName"])
+
     def modeChanged(self):
         if self.ui.responsiveModeRadioButton.isChecked() == True:
             print("Responsive Mode Button pressed!----------------------------------")
@@ -72,6 +81,8 @@ class MainWindow(QMainWindow):
                 print("[INFO] Starting thread again")
                 self.thread.start()
             self.modeVariable = 1
+        elif self.ui.lineEdit.focusOutEvent== True:
+            print("Search keyword updated")
         else:
             print("[ERROR] Unknown error!")
         print("[INFO] Value changed to :", self.modeVariable)

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainwindow.ui',
 # licensing of 'mainwindow.ui' applies.
 #
-# Created: Mon Dec  9 14:43:30 2019
+# Created: Fri Dec 13 15:53:25 2019
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -129,20 +129,20 @@ class Ui_MainWindow(object):
         self.tab_3.setObjectName("tab_3")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.tab_3)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.comboBox = QtWidgets.QComboBox(self.tab_3)
-        self.comboBox.setObjectName("comboBox")
-        self.gridLayout_4.addWidget(self.comboBox, 0, 0, 1, 1)
         self.pushButton_9 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_9.setObjectName("pushButton_9")
-        self.gridLayout_4.addWidget(self.pushButton_9, 0, 1, 1, 1)
-        self.tableView_2 = QtWidgets.QTableView(self.tab_3)
-        self.tableView_2.setObjectName("tableView_2")
-        self.gridLayout_4.addWidget(self.tableView_2, 1, 0, 1, 2)
+        self.gridLayout_4.addWidget(self.pushButton_9, 1, 1, 1, 1)
+        self.lineEdit = QtWidgets.QLineEdit(self.tab_3)
+        self.lineEdit.setObjectName("lineEdit")
+        self.gridLayout_4.addWidget(self.lineEdit, 1, 0, 1, 1)
+        self.listWidget = QtWidgets.QListWidget(self.tab_3)
+        self.listWidget.setObjectName("listWidget")
+        self.gridLayout_4.addWidget(self.listWidget, 2, 0, 1, 1)
         self.tabWidget.addTab(self.tab_3, "")
         self.verticalLayout_3.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar()
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -150,7 +150,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
